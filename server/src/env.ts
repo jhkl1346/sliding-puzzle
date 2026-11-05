@@ -4,6 +4,10 @@ const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   PORT: z.coerce.number().int().positive().default(3000),
   DATABASE_URL: z.url({ message: 'DATABASE_URL에 PostgreSQL 접속 주소를 넣어 주세요.' }),
+  // JWT 서명용 비밀 키. 짧으면 추측당하기 쉬우므로 32자 이상만 허용한다.
+  JWT_SECRET: z
+    .string({ message: 'JWT_SECRET을 넣어 주세요.' })
+    .min(32, 'JWT_SECRET은 32자 이상이어야 해요.'),
   // 쿠키 인증을 허용할 클라이언트 주소 (CORS)
   CLIENT_ORIGIN: z.url().default('http://localhost:5173'),
 })

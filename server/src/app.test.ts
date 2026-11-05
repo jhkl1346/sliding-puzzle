@@ -1,9 +1,9 @@
 import request from 'supertest'
 import { describe, expect, it } from 'vitest'
-import { createApp } from './app'
+import { createAppWithoutDb, TEST_CLIENT_ORIGIN } from './test/helpers'
 
-const CLIENT_ORIGIN = 'http://localhost:5173'
-const app = createApp({ clientOrigin: CLIENT_ORIGIN })
+const CLIENT_ORIGIN = TEST_CLIENT_ORIGIN
+const app = createAppWithoutDb()
 
 describe('GET /api/health', () => {
   it('200과 상태를 돌려준다', async () => {

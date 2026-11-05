@@ -15,7 +15,15 @@ try {
   throw error
 }
 
-const server = createApp({ clientOrigin: env.CLIENT_ORIGIN }).listen(env.PORT, () => {
+const app = createApp({
+  prisma,
+  clientOrigin: env.CLIENT_ORIGIN,
+  jwtSecret: env.JWT_SECRET,
+  // 배포 환경(HTTPS)에서는 Secure 쿠키만 쓴다. 로컬 개발(http)에서는 끈다.
+  secureCookies: env.NODE_ENV === 'production',
+})
+
+const server = app.listen(env.PORT, () => {
   console.log(`서버 실행 중: http://localhost:${env.PORT}`)
 })
 

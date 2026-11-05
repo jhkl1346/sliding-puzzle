@@ -36,9 +36,23 @@ Node.js 22 이상과 PostgreSQL 데이터베이스(개발에는 [Neon](https://n
 
 ```bash
 npm install                          # 의존성 설치 (Prisma 클라이언트도 생성)
-cp server/.env.example server/.env   # 환경변수 파일 만들기 (DATABASE_URL, DIRECT_URL 채우기)
+cp server/.env.example server/.env   # 환경변수 파일 만들기 (각 항목 설명 참고해서 채우기)
 npm run db:deploy -w server          # DB에 마이그레이션 적용 (테이블 만들기)
 npm run dev                          # 클라이언트(http://localhost:5173) + 서버(http://localhost:3000)
+```
+
+### 테스트 DB
+
+서버 API 테스트는 실제 PostgreSQL을 쓰므로 **개발 DB와 다른 테스트 전용 DB**가 필요합니다.
+`server/.env`의 `TEST_DATABASE_URL`, `TEST_DIRECT_URL`에 이름이 `_test`로 끝나는 DB 주소를 넣으면,
+`npm test`가 시작할 때 마이그레이션을 적용하고 데이터를 비운 뒤 테스트합니다.
+(실수로 개발 DB를 지우지 않도록 DB 이름이 `_test`로 끝나지 않으면 테스트를 멈춥니다.)
+
+```bash
+# Neon CLI를 쓴다면 같은 프로젝트에 테스트 DB를 하나 더 만들 수 있습니다.
+neon databases create --branch main --name sliding_puzzle_test
+neon connection-string main --database-name sliding_puzzle_test --pooled --ssl verify-full  # TEST_DATABASE_URL
+neon connection-string main --database-name sliding_puzzle_test --ssl verify-full           # TEST_DIRECT_URL
 ```
 
 | 명령어           | 설명                     |

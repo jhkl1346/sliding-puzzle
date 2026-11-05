@@ -6,7 +6,8 @@
     "suspicious": "warn"
   },
   "rules": {
-    "react/react-in-jsx-scope": "off"
+    "react/react-in-jsx-scope": "off",
+    "oxc/no-async-endpoint-handlers": "off"
   },
   "ignorePatterns": ["**/dist/**", "**/node_modules/**", "server/src/generated/**"]
 }
