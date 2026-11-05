@@ -7,6 +7,7 @@ import {
 } from '@sliding-puzzle/shared'
 import { screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
+import { tileColor } from '../lib/tileColor'
 import { renderWithProviders } from '../test/utils'
 import { GamePage } from './GamePage'
 
@@ -29,6 +30,15 @@ describe('GamePage', () => {
     expect(within(board).getAllByRole('button')).toHaveLength(8)
     expect(screen.getByRole('status')).toHaveTextContent('이동 0회')
     expect(screen.getByText('00:00.0')).toBeInTheDocument()
+  })
+
+  it('타일은 지금 위치가 아니라 원래 자리에 맞는 배경색을 쓴다', () => {
+    renderGame()
+
+    // 섞여 있어도 타일 1은 항상 왼쪽 위 색(하늘색), 타일 8은 마지막 칸 근처 색이다.
+    expect(within(tileButton(1)).getByText('1')).toHaveStyle({ backgroundColor: tileColor(1, 3) })
+    expect(within(tileButton(8)).getByText('8')).toHaveStyle({ backgroundColor: tileColor(8, 3) })
+    expect(tileColor(1, 3)).not.toBe(tileColor(8, 3))
   })
 
   it('빈칸 옆 타일을 누르면 움직이고 이동 횟수가 늘어난다', async () => {

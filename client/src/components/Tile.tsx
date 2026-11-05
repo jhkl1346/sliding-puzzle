@@ -1,3 +1,5 @@
+import { tileColor } from '../lib/tileColor'
+
 interface TileProps {
   tile: number
   index: number
@@ -26,7 +28,10 @@ export function Tile({ tile, index, size, movable, disabled, onMove }: TileProps
         transform: `translate(${col * 100}%, ${row * 100}%)`,
       }}
     >
-      <span className="flex h-full w-full items-center justify-center rounded-lg bg-white font-bold text-slate-800 shadow-sm group-focus-visible:ring-4 group-focus-visible:ring-sky-500 group-enabled:group-hover:bg-sky-50">
+      <span
+        className="flex h-full w-full items-center justify-center rounded-lg font-bold text-slate-900 shadow-sm group-focus-visible:ring-4 group-focus-visible:ring-sky-600 group-enabled:group-hover:brightness-95"
+        style={{ backgroundColor: tileColor(tile, size) }}
+      >
         {tile}
       </span>
     </button>

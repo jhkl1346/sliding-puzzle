@@ -78,16 +78,17 @@ export function GamePage({ recordMode = false, randomSeed = defaultRandomSeed }:
             onLoginAgain={loginAgain}
           />
         )}
-        {record.ready && finished && (
-          <ResultPanel
-            moves={state.moveLog.length}
-            timeMs={elapsedMs}
-            onRestart={() => record.start(state.size)}
-            save={record.save}
-            onLoginAgain={loginAgain}
-          />
-        )}
       </Board>
+
+      {record.ready && finished && (
+        <ResultPanel
+          moves={state.moveLog.length}
+          timeMs={elapsedMs}
+          onRestart={() => record.start(state.size)}
+          save={record.save}
+          onLoginAgain={loginAgain}
+        />
+      )}
 
       <div className="flex flex-col items-center gap-2">
         <button

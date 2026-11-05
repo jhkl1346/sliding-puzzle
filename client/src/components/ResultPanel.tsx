@@ -70,7 +70,8 @@ export function ResultPanel({ moves, timeMs, onRestart, save, onLoginAgain }: Re
   return (
     <section
       aria-labelledby="result-title"
-      className="absolute inset-0 flex flex-col items-center justify-center gap-3 rounded-xl bg-white/90 px-4 text-center backdrop-blur-sm"
+      // 완성된 그림을 가리지 않도록 판 아래에 카드로 보여 준다.
+      className="flex w-full max-w-md flex-col items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-5 text-center shadow-sm"
     >
       <h2 id="result-title" className="text-3xl font-bold">
         완성했어요!
