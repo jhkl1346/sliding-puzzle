@@ -1,0 +1,2 @@
+# Windows에서도 줄바꿈을 LF로 통일한다 (Prettier 설정과 맞춤)
+* text=auto eol=lf
