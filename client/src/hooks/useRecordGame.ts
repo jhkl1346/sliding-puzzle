@@ -3,6 +3,7 @@ import { useMutation } from '@tanstack/react-query'
 import { useCallback, useEffect, useRef } from 'react'
 import { abandonGame, createGame, finishGame } from '../api/games'
 import type { useGame } from './useGame'
+import { useInvalidateRecords } from './useRecords'
 
 type Game = ReturnType<typeof useGame>
 
@@ -12,9 +13,12 @@ export function useRecordGame(enabled: boolean, game: Game, initialSize: Size) {
   const { state, finished, begin, start: startPractice } = game
 
   const create = useMutation({ mutationFn: createGame })
+  const invalidateRecords = useInvalidateRecords()
   const finish = useMutation({
     mutationFn: ({ id, ...body }: { id: string; moveLog: number[]; timeMs: number }) =>
       finishGame(id, body),
+    // 새 기록이 생겼으니 내 기록 페이지의 통계·목록을 다시 불러오게 한다.
+    onSuccess: invalidateRecords,
   })
   const abandon = useMutation({ mutationFn: abandonGame })
 

@@ -2,7 +2,7 @@ import { Link } from 'react-router'
 import { useLogout, useMe } from '../hooks/useAuth'
 
 const linkClass =
-  'rounded-lg px-3 py-2 font-semibold text-sky-700 hover:bg-sky-50 focus-visible:ring-4 focus-visible:ring-sky-500 focus-visible:outline-none'
+  'whitespace-nowrap rounded-lg px-2 py-2 font-semibold text-sky-700 hover:bg-sky-50 focus-visible:ring-4 focus-visible:ring-sky-500 focus-visible:outline-none sm:px-3'
 
 export function Header() {
   const me = useMe()
@@ -14,7 +14,7 @@ export function Header() {
         aria-label="주 메뉴"
         className="mx-auto flex max-w-3xl items-center justify-between gap-4 px-4 py-2"
       >
-        <Link to="/" className="font-bold text-slate-900">
+        <Link to="/" className="font-bold whitespace-nowrap text-slate-900">
           Sliding Puzzle
         </Link>
 
@@ -22,7 +22,13 @@ export function Header() {
         <div className="flex min-h-10 items-center gap-1 text-sm">
           {me.data ? (
             <>
-              <span className="px-2 text-slate-700">{me.data.username}님</span>
+              <Link to="/records" className={linkClass}>
+                내 기록
+              </Link>
+              {/* 좁은 화면에서는 아이디를 숨겨서 메뉴가 한 줄에 들어가게 한다. */}
+              <span className="hidden max-w-40 truncate px-2 text-slate-700 sm:inline">
+                {me.data.username}님
+              </span>
               <button
                 type="button"
                 onClick={() => logout.mutate()}

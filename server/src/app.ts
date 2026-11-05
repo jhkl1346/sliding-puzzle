@@ -9,8 +9,10 @@ import { errorHandler, notFound } from './middleware/errorHandler'
 import { createRequireAuth } from './middleware/requireAuth'
 import { createAuthRouter } from './routes/auth'
 import { createGamesRouter } from './routes/games'
+import { createStatsRouter } from './routes/stats'
 import { createAuthService } from './services/authService'
 import { createGameService } from './services/gameService'
+import { createStatsService } from './services/statsService'
 
 export interface AppOptions {
   prisma: PrismaClient
@@ -70,6 +72,10 @@ export function createApp({
   )
 
   app.use('/api/games', createGamesRouter({ gameService: createGameService(prisma), requireAuth }))
+  app.use(
+    '/api/stats',
+    createStatsRouter({ statsService: createStatsService(prisma), requireAuth }),
+  )
 
   app.use(notFound)
   app.use(errorHandler)
