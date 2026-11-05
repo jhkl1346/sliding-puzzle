@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router'
 import { Header } from './components/Header'
 import { AuthPage } from './pages/AuthPage'
-import { GamePage } from './pages/GamePage'
+import { HomePage } from './pages/HomePage'
 
 // 화면 주소와 페이지 연결. 테스트에서는 MemoryRouter로 감싸서 쓴다.
 export function AppRoutes() {
@@ -11,7 +11,7 @@ export function AppRoutes() {
     <>
       <Header />
       <Routes>
-        <Route path="/" element={<GamePage />} />
+        <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<AuthPage mode="login" />} />
         <Route path="/register" element={<AuthPage mode="register" />} />
       </Routes>

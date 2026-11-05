@@ -8,7 +8,9 @@ import type { PrismaClient } from './generated/prisma/client'
 import { errorHandler, notFound } from './middleware/errorHandler'
 import { createRequireAuth } from './middleware/requireAuth'
 import { createAuthRouter } from './routes/auth'
+import { createGamesRouter } from './routes/games'
 import { createAuthService } from './services/authService'
+import { createGameService } from './services/gameService'
 
 export interface AppOptions {
   prisma: PrismaClient
@@ -66,6 +68,8 @@ export function createApp({
       rateLimit: authLimiter,
     }),
   )
+
+  app.use('/api/games', createGamesRouter({ gameService: createGameService(prisma), requireAuth }))
 
   app.use(notFound)
   app.use(errorHandler)

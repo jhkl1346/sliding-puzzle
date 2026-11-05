@@ -1,5 +1,6 @@
 import type { PublicUser } from '@sliding-puzzle/shared'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useNavigate } from 'react-router'
 import { fetchMe, login, logout, register } from '../api/auth'
 
 const ME_QUERY_KEY = ['auth', 'me'] as const
@@ -32,4 +33,14 @@ export function useRegister() {
 export function useLogout() {
   const setMe = useSetMe()
   return useMutation({ mutationFn: logout, onSuccess: () => setMe(null) })
+}
+
+// 서버가 401(로그인 만료)을 돌려줬을 때: 로그인 화면으로 보내기 전에 "로그인 안 됨"으로 바꾼다.
+export function useLoginAgain() {
+  const setMe = useSetMe()
+  const navigate = useNavigate()
+  return () => {
+    setMe(null)
+    navigate('/login')
+  }
 }

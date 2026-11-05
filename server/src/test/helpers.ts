@@ -1,4 +1,6 @@
 import { randomUUID } from 'node:crypto'
+import type { Express } from 'express'
+import request from 'supertest'
 import { inject } from 'vitest'
 import { type AppOptions, createApp } from '../app'
 import { createPrisma } from '../db'
@@ -38,3 +40,13 @@ export function uniqueUsername(): string {
 }
 
 export const VALID_PASSWORD = 'correct-horse-1'
+
+// 새 계정으로 가입해서, 로그인 쿠키를 기억하는 클라이언트를 돌려준다.
+export async function loggedInAgent(app: Express) {
+  const agent = request.agent(app)
+  const res = await agent
+    .post('/api/auth/register')
+    .send({ username: uniqueUsername(), password: VALID_PASSWORD })
+  if (res.status !== 201) throw new Error(`가입 실패: ${res.status}`)
+  return { agent, userId: res.body.user.id as string }
+}

@@ -5,16 +5,16 @@ import {
   shuffleWithMoves,
   tileInDirection,
 } from '@sliding-puzzle/shared'
-import { render, screen, within } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
+import { screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
+import { renderWithProviders } from '../test/utils'
 import { GamePage } from './GamePage'
 
 const SEED = 777
 
+// 연습 모드 (서버를 쓰지 않는다)
 function renderGame() {
-  const user = userEvent.setup()
-  render(<GamePage randomSeed={() => SEED} />)
+  const { user } = renderWithProviders(<GamePage randomSeed={() => SEED} />)
   return { user, board: screen.getByRole('group', { name: /퍼즐 판/ }) }
 }
 
@@ -67,6 +67,7 @@ describe('GamePage', () => {
     }
 
     expect(screen.getByRole('heading', { name: '완성했어요!' })).toBeInTheDocument()
+    expect(screen.getByText('하면 기록이 저장돼요.', { exact: false })).toBeInTheDocument()
     expect(screen.getByText(new RegExp(`^${solution.length}번 이동`))).toBeInTheDocument()
 
     // 끝난 판의 타일은 더 이상 누를 수 없다.

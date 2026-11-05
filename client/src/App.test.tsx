@@ -12,8 +12,9 @@ describe('App', () => {
     mockFetch({ 'GET /api/auth/me': NOT_LOGGED_IN })
     render(<App />)
 
-    expect(screen.getByRole('heading', { name: 'Sliding Puzzle' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'Sliding Puzzle' })).toBeInTheDocument()
     expect(screen.getByRole('group', { name: '3×3 퍼즐 판' })).toBeInTheDocument()
-    expect(await screen.findByRole('link', { name: '로그인' })).toBeInTheDocument()
+    expect(screen.getByText('연습 모드 · 기록은 저장되지 않아요')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: '로그인' })).toBeInTheDocument()
   })
 })
