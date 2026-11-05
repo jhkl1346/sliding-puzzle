@@ -3,7 +3,7 @@
 > 이 문서를 프로젝트 루트에 `SPEC.md`로 두고, 위에서부터 순서대로 진행합니다.
 > Claude Code와 작업할 때는 "SPEC.md를 읽고 다음 마일스톤을 진행해줘"처럼 요청하면 됩니다.
 >
-> **현재 진행 상황 (2026-11-05 기준):** 마일스톤 0 완료. 다음은 마일스톤 1입니다.
+> **현재 진행 상황 (2026-11-05 기준):** 마일스톤 1 완료. 다음은 마일스톤 2입니다.
 
 ---
 
@@ -300,11 +300,11 @@ function replay(size: number, seed: number, moveLog: number[]): { ok: boolean; m
 
 ### 마일스톤 1. 게임 로직 (shared) (반나절~1일)
 
-- [ ] `constants.ts` (SIZES = [3, 4, 5], 크기별 섞기 횟수)
-- [ ] `prng.ts`, `shuffle.ts` (시드 기반, 직전 이동 되돌리기 방지)
-- [ ] `board.ts` (createSolved, canMove, move, isSolved)
-- [ ] `replay.ts` (이동 기록 재생과 검증)
-- [ ] 테스트: 같은 시드는 같은 배치, 섞인 배치가 항상 풀리는지(역재생), 잘못된 이동 거부, 완성 판정
+- [x] `constants.ts` (SIZES = [3, 4, 5], 크기별 섞기 횟수)
+- [x] `prng.ts`, `shuffle.ts` (시드 기반, 직전 이동 되돌리기 방지)
+- [x] `board.ts` (createSolved, canMove, move, isSolved)
+- [x] `replay.ts` (이동 기록 재생과 검증)
+- [x] 테스트: 같은 시드는 같은 배치, 섞인 배치가 항상 풀리는지(역재생), 잘못된 이동 거부, 완성 판정
 
 ### 마일스톤 2. 연습 모드 게임 화면 (client) (1일)
 
