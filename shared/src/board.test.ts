@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { canMove, createSolved, isSolved, move, movableTiles } from './board'
+import { canMove, createSolved, isSolved, move, movableTiles, tileInDirection } from './board'
 
 // 3×3 완성 상태
 // 1 2 3
@@ -76,5 +76,34 @@ describe('movableTiles', () => {
     // 4 _ 5
     // 6 7 8
     expect(movableTiles([1, 2, 3, 4, 0, 5, 6, 7, 8], 3)).toEqual([2, 4, 5, 7])
+  })
+})
+
+describe('tileInDirection', () => {
+  // 1 2 3
+  // 4 _ 5
+  // 6 7 8
+  const center = [1, 2, 3, 4, 0, 5, 6, 7, 8]
+
+  it('방향키 쪽으로 움직일 타일을 고른다', () => {
+    expect(tileInDirection(center, 3, 'up')).toBe(7) // 아래 타일이 위로
+    expect(tileInDirection(center, 3, 'down')).toBe(2) // 위 타일이 아래로
+    expect(tileInDirection(center, 3, 'left')).toBe(5) // 오른쪽 타일이 왼쪽으로
+    expect(tileInDirection(center, 3, 'right')).toBe(4) // 왼쪽 타일이 오른쪽으로
+  })
+
+  it('판 밖이면 null을 돌려준다', () => {
+    // 빈칸이 오른쪽 아래 구석
+    expect(tileInDirection(solved3, 3, 'up')).toBeNull()
+    expect(tileInDirection(solved3, 3, 'left')).toBeNull()
+    expect(tileInDirection(solved3, 3, 'down')).toBe(6)
+    expect(tileInDirection(solved3, 3, 'right')).toBe(8)
+  })
+
+  it('고른 타일은 항상 움직일 수 있다', () => {
+    for (const direction of ['up', 'down', 'left', 'right'] as const) {
+      const tile = tileInDirection(center, 3, direction)
+      expect(tile !== null && canMove(center, 3, tile)).toBe(true)
+    }
   })
 })

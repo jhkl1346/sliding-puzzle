@@ -51,3 +51,23 @@ export function move(board: Board, size: number, tile: number): Board {
 export function movableTiles(board: Board, size: number): number[] {
   return board.filter((tile) => canMove(board, size, tile)).toSorted((a, b) => a - b)
 }
+
+export type Direction = 'up' | 'down' | 'left' | 'right'
+
+// 방향키를 눌렀을 때 움직일 타일. 예: 'up'이면 빈칸 바로 아래 타일이 위로 올라온다.
+// 그 방향으로 움직일 타일이 없으면 null.
+export function tileInDirection(board: Board, size: number, direction: Direction): number | null {
+  const emptyIndex = board.indexOf(EMPTY)
+  const row = Math.floor(emptyIndex / size)
+  const col = emptyIndex % size
+
+  const [tileRow, tileCol] = {
+    up: [row + 1, col],
+    down: [row - 1, col],
+    left: [row, col + 1],
+    right: [row, col - 1],
+  }[direction]
+
+  if (tileRow < 0 || tileRow >= size || tileCol < 0 || tileCol >= size) return null
+  return board[tileRow * size + tileCol] ?? null
+}
