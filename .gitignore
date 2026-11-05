@@ -8,3 +8,9 @@ coverage
 .env
 .env.*
 !.env.example
+
+# Prisma가 자동으로 만드는 코드 (npm install 때 다시 생성됨)
+server/src/generated
+
+# Neon CLI가 이 폴더와 연결한 프로젝트 정보 (neon init이 추가)
+.neon

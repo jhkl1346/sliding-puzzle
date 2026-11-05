@@ -3,7 +3,7 @@
 > 이 문서를 프로젝트 루트에 `SPEC.md`로 두고, 위에서부터 순서대로 진행합니다.
 > Claude Code와 작업할 때는 "SPEC.md를 읽고 다음 마일스톤을 진행해줘"처럼 요청하면 됩니다.
 >
-> **현재 진행 상황 (2026-11-05 기준):** 마일스톤 2 완료. 다음은 마일스톤 3입니다.
+> **현재 진행 상황 (2026-11-05 기준):** 마일스톤 3 완료. 다음은 마일스톤 4입니다.
 
 ---
 
@@ -74,7 +74,7 @@
 | 린트/포맷  | oxlint + Prettier                                                           | 날씨 앱과 동일                               |
 | 배포       | 클라이언트 Vercel, 서버 Render(또는 Railway), DB Neon(또는 Render Postgres) | 무료 플랜으로 가능                           |
 
-> 로컬 DB는 Docker가 있으면 Docker Compose로 Postgres를 띄우고, 없으면 Neon 같은 무료 호스팅 DB의 연결 주소를 `.env`에 넣어 개발합니다. (마일스톤 2에서 결정)
+> 로컬 DB는 Docker가 있으면 Docker Compose로 Postgres를 띄우고, 없으면 Neon 같은 무료 호스팅 DB의 연결 주소를 `.env`에 넣어 개발합니다. → **Neon으로 결정** (Docker 미설치, 배포 DB로도 그대로 사용)
 
 ---
 
@@ -315,9 +315,9 @@ function replay(size: number, seed: number, moveLog: number[]): { ok: boolean; m
 
 ### 마일스톤 3. 서버 기본과 DB (1일)
 
-- [ ] DB 준비 (Docker 또는 Neon), Prisma 스키마와 첫 마이그레이션
-- [ ] Express 앱 기본 구성 (helmet, cors, JSON 파싱, 에러 핸들러, 헬스체크 `GET /api/health`)
-- [ ] `app.ts` / `index.ts` 분리, Supertest로 헬스체크 테스트
+- [x] DB 준비 (Docker 또는 Neon), Prisma 스키마와 첫 마이그레이션
+- [x] Express 앱 기본 구성 (helmet, cors, JSON 파싱, 에러 핸들러, 헬스체크 `GET /api/health`)
+- [x] `app.ts` / `index.ts` 분리, Supertest로 헬스체크 테스트
 
 ### 마일스톤 4. 인증 (1일)
 

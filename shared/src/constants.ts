@@ -10,6 +10,9 @@ export const SHUFFLE_MOVES: Record<Size, number> = {
   5: 250,
 }
 
+// 시드의 최댓값. DB의 Int(32비트 부호 있는 정수)에 들어가도록 2^31-1로 둔다.
+export const MAX_SEED = 2 ** 31 - 1
+
 export function isSize(value: number): value is Size {
   return (SIZES as readonly number[]).includes(value)
 }

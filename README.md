@@ -32,12 +32,13 @@ server/   Express API + Prisma + PostgreSQL
 
 ## 실행 방법
 
-Node.js 22 이상이 필요합니다.
+Node.js 22 이상과 PostgreSQL 데이터베이스(개발에는 [Neon](https://neon.com) 무료 플랜 사용)가 필요합니다.
 
 ```bash
-npm install          # 의존성 설치
-cp server/.env.example server/.env   # 환경변수 파일 만들기 (값 채우기)
-npm run dev          # 클라이언트(http://localhost:5173) + 서버(http://localhost:3000)
+npm install                          # 의존성 설치 (Prisma 클라이언트도 생성)
+cp server/.env.example server/.env   # 환경변수 파일 만들기 (DATABASE_URL, DIRECT_URL 채우기)
+npm run db:deploy -w server          # DB에 마이그레이션 적용 (테이블 만들기)
+npm run dev                          # 클라이언트(http://localhost:5173) + 서버(http://localhost:3000)
 ```
 
 | 명령어           | 설명                     |

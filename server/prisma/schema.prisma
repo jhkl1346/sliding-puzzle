@@ -1,0 +1,44 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+// 접속 주소(DATABASE_URL)는 prisma.config.ts에서 읽는다.
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id           String   @id @default(uuid())
+  username     String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  games        Game[]
+}
+
+enum GameStatus {
+  IN_PROGRESS
+  COMPLETED
+  ABANDONED
+}
+
+model Game {
+  id         String     @id @default(uuid())
+  userId     String
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // 허용하는 크기는 DB 제약 대신 shared의 SIZES로 검증한다. (크기를 추가해도 마이그레이션이 필요 없음)
+  size       Int
+  // 퍼즐 배치를 다시 만드는 시드 (0 ~ MAX_SEED, shared/constants.ts)
+  seed       Int
+  status     GameStatus @default(IN_PROGRESS)
+  startedAt  DateTime   @default(now())
+  finishedAt DateTime?
+  // 완료했을 때만 채운다. moves는 서버가 moveLog를 재생해서 센 값이다.
+  moves      Int?
+  timeMs     Int?
+  // 움직인 타일 번호 배열
+  moveLog    Json?
+
+  @@index([userId, size, status])
+  @@index([userId, finishedAt])
+}
