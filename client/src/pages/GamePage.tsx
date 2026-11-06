@@ -9,6 +9,7 @@ import { useLoginAgain } from '../hooks/useAuth'
 import { useElapsedTime } from '../hooks/useElapsedTime'
 import { useGame } from '../hooks/useGame'
 import { useRecordGame } from '../hooks/useRecordGame'
+import { useTileTheme } from '../hooks/useTileTheme'
 import { randomSeed as defaultRandomSeed } from '../lib/randomSeed'
 
 const DEFAULT_SIZE: Size = 3
@@ -25,12 +26,19 @@ interface GamePageProps {
   recordMode?: boolean
   // 연습 모드 테스트에서 같은 퍼즐이 나오게 시드를 고정할 수 있다.
   randomSeed?: () => number
+  // 테스트에서 같은 색 디자인이 나오게 고정할 수 있다.
+  themeRandom?: () => number
 }
 
-export function GamePage({ recordMode = false, randomSeed = defaultRandomSeed }: GamePageProps) {
+export function GamePage({
+  recordMode = false,
+  randomSeed = defaultRandomSeed,
+  themeRandom = Math.random,
+}: GamePageProps) {
   const game = useGame(DEFAULT_SIZE, randomSeed)
   const { state, finished, moveTile, moveInDirection } = game
   const record = useRecordGame(recordMode, game, DEFAULT_SIZE)
+  const theme = useTileTheme(state.gameId, themeRandom)
   const loginAgain = useLoginAgain()
   const elapsedMs = useElapsedTime(state.startedAt, state.finishedAt)
   const playable = record.ready && !finished
@@ -69,6 +77,8 @@ export function GamePage({ recordMode = false, randomSeed = defaultRandomSeed }:
         board={state.board}
         size={state.size}
         disabled={!playable}
+        theme={theme}
+        showStartHint={!finished}
         onMove={moveTile}
       >
         {!record.ready && (

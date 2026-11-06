@@ -1,4 +1,4 @@
-import { tileColor } from '../lib/tileColor'
+import type { TileColors } from '../lib/tileThemes'
 
 interface TileProps {
   tile: number
@@ -6,10 +6,11 @@ interface TileProps {
   size: number
   movable: boolean
   disabled: boolean
+  colors: TileColors
   onMove: (tile: number) => void
 }
 
-export function Tile({ tile, index, size, movable, disabled, onMove }: TileProps) {
+export function Tile({ tile, index, size, movable, disabled, colors, onMove }: TileProps) {
   const row = Math.floor(index / size)
   const col = index % size
   const label = `타일 ${tile}, ${row + 1}행 ${col + 1}열${movable ? ', 빈칸 쪽으로 이동' : ''}`
@@ -29,8 +30,8 @@ export function Tile({ tile, index, size, movable, disabled, onMove }: TileProps
       }}
     >
       <span
-        className="flex h-full w-full items-center justify-center rounded-lg font-bold text-slate-900 shadow-sm group-focus-visible:ring-4 group-focus-visible:ring-sky-600 group-enabled:group-hover:brightness-95"
-        style={{ backgroundColor: tileColor(tile, size) }}
+        className="flex h-full w-full items-center justify-center rounded-lg font-bold shadow-sm group-focus-visible:ring-4 group-focus-visible:ring-sky-600 group-enabled:group-hover:brightness-95"
+        style={{ backgroundColor: colors.background, color: colors.color }}
       >
         {tile}
       </span>
