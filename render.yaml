@@ -1,0 +1,31 @@
+# Render 설정 (Blueprint): API 서버를 어떻게 빌드하고 실행할지 적는다.
+# Render 대시보드에서 New → Blueprint로 이 저장소를 고르면 이 파일대로 서비스가 만들어진다.
+services:
+  - type: web
+    name: sliding-puzzle-api
+    runtime: node
+    plan: free
+    # Neon DB와 같은 지역이라 서버와 DB 사이가 빠르다.
+    region: singapore
+    # NODE_ENV=production이면 개발용 패키지가 설치되지 않으므로, 빌드에 필요한 개발용 패키지까지 설치한다.
+    # 빌드할 때 DB 마이그레이션도 함께 적용한다.
+    buildCommand: npm ci --include=dev && npm run build -w server && npm run db:deploy -w server
+    startCommand: npm run start -w server
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # 사용자 → Vercel → Render 앞단 → 서버 순서라, 앞의 프록시 2단계를 믿어야 실제 사용자 IP로 요청을 센다.
+      - key: TRUST_PROXY
+        value: '2'
+      # JWT 비밀 키는 Render가 무작위로 만들어 준다.
+      - key: JWT_SECRET
+        generateValue: true
+      # 아래 값은 Render 대시보드에서 직접 넣는다. (비밀 값이라 저장소에 적지 않는다)
+      - key: DATABASE_URL
+        sync: false
+      - key: DIRECT_URL
+        sync: false
+      - key: CLIENT_ORIGIN
+        sync: false

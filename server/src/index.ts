@@ -21,6 +21,7 @@ const app = createApp({
   jwtSecret: env.JWT_SECRET,
   // 배포 환경(HTTPS)에서는 Secure 쿠키만 쓴다. 로컬 개발(http)에서는 끈다.
   secureCookies: env.NODE_ENV === 'production',
+  trustProxy: env.TRUST_PROXY,
 })
 
 const server = app.listen(env.PORT, () => {

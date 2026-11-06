@@ -2,6 +2,9 @@
   "name": "sliding-puzzle",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
   "workspaces": [
     "shared",
     "client",

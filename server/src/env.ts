@@ -10,6 +10,8 @@ const envSchema = z.object({
     .min(32, 'JWT_SECRET은 32자 이상이어야 해요.'),
   // 쿠키 인증을 허용할 클라이언트 주소 (CORS)
   CLIENT_ORIGIN: z.url().default('http://localhost:5173'),
+  // 앞단 프록시를 몇 단계까지 믿을지 (배포: Vercel → Render 구조라 보통 1 이상, 로컬: 0)
+  TRUST_PROXY: z.coerce.number().int().min(0).max(5).default(0),
 })
 
 export type Env = z.infer<typeof envSchema>

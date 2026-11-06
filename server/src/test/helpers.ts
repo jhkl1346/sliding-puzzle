@@ -18,6 +18,7 @@ export function createTestApp(overrides: Partial<AppOptions> = {}) {
     secureCookies: false,
     bcryptRounds: 4,
     authRateLimit: { windowMs: 60_000, limit: 1000 },
+    apiRateLimit: { windowMs: 60_000, limit: 100_000 },
     ...overrides,
   })
   return { app, prisma }
@@ -30,6 +31,7 @@ export function createAppWithoutDb(overrides: Partial<AppOptions> = {}) {
     clientOrigin: TEST_CLIENT_ORIGIN,
     jwtSecret: TEST_JWT_SECRET,
     secureCookies: false,
+    apiRateLimit: { windowMs: 60_000, limit: 100_000 },
     ...overrides,
   })
 }

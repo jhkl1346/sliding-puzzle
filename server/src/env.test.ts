@@ -13,11 +13,18 @@ describe('loadEnv', () => {
       DATABASE_URL,
       JWT_SECRET,
       CLIENT_ORIGIN: 'http://localhost:5173',
+      TRUST_PROXY: 0,
     })
   })
 
   it('PORT 문자열을 숫자로 바꾼다', () => {
     expect(loadEnv({ ...required, PORT: '4000' }).PORT).toBe(4000)
+  })
+
+  it('TRUST_PROXY는 0~5 사이 숫자만 받는다', () => {
+    expect(loadEnv({ ...required, TRUST_PROXY: '1' }).TRUST_PROXY).toBe(1)
+    expect(() => loadEnv({ ...required, TRUST_PROXY: '-1' })).toThrow('TRUST_PROXY')
+    expect(() => loadEnv({ ...required, TRUST_PROXY: 'yes' })).toThrow('TRUST_PROXY')
   })
 
   it('DATABASE_URL이 없으면 알아보기 쉬운 오류를 낸다', () => {

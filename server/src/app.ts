@@ -24,7 +24,32 @@ export interface AppOptions {
   // bcrypt 해시 강도. 높을수록 안전하지만 느리다. (테스트에서는 낮춰서 빠르게 돌린다)
   bcryptRounds?: number
   // 로그인·회원가입 요청 제한: windowMs 동안 IP마다 limit번까지
-  authRateLimit?: { windowMs: number; limit: number }
+  authRateLimit?: RateLimitOptions
+  // API 전체 요청 제한 (헬스체크 제외)
+  apiRateLimit?: RateLimitOptions
+  // 앞단의 중계 서버(프록시)를 몇 단계까지 믿을지. 배포 환경에서는 실제 사용자 IP를 알기 위해 필요하다.
+  // 0이면 믿지 않는다. (로컬 개발·테스트)
+  trustProxy?: number
+}
+
+interface RateLimitOptions {
+  windowMs: number
+  limit: number
+}
+
+const FIFTEEN_MINUTES = 15 * 60 * 1000
+
+function createLimiter(options: RateLimitOptions) {
+  return rateLimit({
+    ...options,
+    standardHeaders: 'draft-8',
+    legacyHeaders: false,
+    handler: (_req, res) => {
+      res
+        .status(429)
+        .json(errorBody('TOO_MANY_REQUESTS', '요청이 너무 많아요. 잠시 후 다시 시도해 주세요.'))
+    },
+  })
 }
 
 // 테스트에서 서버를 띄우지 않고 import해서 쓸 수 있게 앱 생성과 실행을 분리한다.
@@ -34,9 +59,14 @@ export function createApp({
   jwtSecret,
   secureCookies,
   bcryptRounds = 12,
-  authRateLimit = { windowMs: 15 * 60 * 1000, limit: 10 },
+  authRateLimit = { windowMs: FIFTEEN_MINUTES, limit: 10 },
+  apiRateLimit = { windowMs: FIFTEEN_MINUTES, limit: 300 },
+  trustProxy = 0,
 }: AppOptions) {
   const app = express()
+
+  // 프록시를 믿지 않으면 모든 요청이 프록시 IP 하나에서 온 것처럼 보여서, 요청 제한이 사용자 전체에 한꺼번에 걸린다.
+  app.set('trust proxy', trustProxy)
 
   app.use(helmet())
   app.use(cors({ origin: clientOrigin, credentials: true }))
@@ -44,21 +74,16 @@ export function createApp({
   app.use(express.json({ limit: '100kb' }))
   app.use(cookieParser())
 
+  // 배포 서비스가 자주 부르는 헬스체크는 요청 제한보다 앞에 둔다.
   app.get('/api/health', (_req, res) => {
     res.json({ status: 'ok' })
   })
 
+  // 과도한 요청이 DB에 부담을 주지 않게 API 전체에 IP마다 제한을 건다.
+  app.use('/api', createLimiter(apiRateLimit))
+
   const requireAuth = createRequireAuth(jwtSecret)
-  const authLimiter = rateLimit({
-    ...authRateLimit,
-    standardHeaders: 'draft-8',
-    legacyHeaders: false,
-    handler: (_req, res) => {
-      res
-        .status(429)
-        .json(errorBody('TOO_MANY_REQUESTS', '요청이 너무 많아요. 잠시 후 다시 시도해 주세요.'))
-    },
-  })
+  const authLimiter = createLimiter(authRateLimit)
 
   app.use(
     '/api/auth',
