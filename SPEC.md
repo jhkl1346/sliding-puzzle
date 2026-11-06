@@ -3,7 +3,7 @@
 > 이 문서를 프로젝트 루트에 `SPEC.md`로 두고, 위에서부터 순서대로 진행합니다.
 > Claude Code와 작업할 때는 "SPEC.md를 읽고 다음 마일스톤을 진행해줘"처럼 요청하면 됩니다.
 >
-> **현재 진행 상황 (2026-11-06 기준):** 마일스톤 7 진행 중 (배포 완료: https://sliding-puzzle-ashy-sigma.vercel.app, README 스크린샷과 최종 확인 남음).
+> **현재 진행 상황 (2026-11-06 기준):** 마일스톤 7 완료 (배포: https://sliding-puzzle-ashy-sigma.vercel.app). 남은 것은 14장 최종 체크리스트 확인과 선택 과제(마일스톤 8)입니다.
 
 ---
 
@@ -345,7 +345,7 @@ function replay(size: number, seed: number, moveLog: number[]): { ok: boolean; m
 - [x] 접근성 · 모바일 점검, Lighthouse
 - [x] 클라이언트 Vercel, 서버 Render, DB 배포와 환경변수 설정
 - [x] GitHub Actions로 린트 / 테스트 자동화
-- [ ] README 완성 (구조도, 검증 설계, 한계, 트러블슈팅)
+- [x] README 완성 (구조도, 검증 설계, 한계, 트러블슈팅)
 
 ### 마일스톤 8. 도전 과제 (선택)
 
