@@ -127,31 +127,41 @@ describe('GET /api/auth/me', () => {
     expect(res.body.user.username).toBe(username)
   })
 
-  it('쿠키가 없으면 401 UNAUTHORIZED', async () => {
+  it('쿠키가 없으면 로그인하지 않은 상태(user: null)를 200으로 돌려준다', async () => {
     const res = await request(app).get('/api/auth/me')
 
-    expect(res.status).toBe(401)
-    expect(res.body.error.code).toBe('UNAUTHORIZED')
+    expect(res.status).toBe(200)
+    expect(res.body).toEqual({ user: null })
   })
 
-  it('위조하거나 다른 키로 서명한 토큰은 거부한다', async () => {
+  it('위조하거나 다른 키로 서명한 토큰은 로그인으로 인정하지 않는다', async () => {
     const res = await register(uniqueUsername())
     const forged = await signToken(res.body.user.id, 'another-secret-that-is-at-least-32-chars')
 
     const tampered = await request(app).get('/api/auth/me').set('Cookie', `token=${forged}`)
     const garbage = await request(app).get('/api/auth/me').set('Cookie', 'token=not-a-jwt')
 
-    expect(tampered.status).toBe(401)
-    expect(garbage.status).toBe(401)
+    expect(tampered.body).toEqual({ user: null })
+    expect(garbage.body).toEqual({ user: null })
   })
 
-  it('토큰은 유효해도 계정이 지워졌으면 401', async () => {
+  it('토큰은 유효해도 계정이 지워졌으면 로그인하지 않은 상태로 본다', async () => {
     const res = await register(uniqueUsername())
     await prisma.user.delete({ where: { id: res.body.user.id } })
 
     const me = await request(app).get('/api/auth/me').set('Cookie', tokenCookie(res))
 
-    expect(me.status).toBe(401)
+    expect(me.body).toEqual({ user: null })
+  })
+
+  it('위조한 토큰으로는 다른 API도 쓸 수 없다 (401)', async () => {
+    const res = await register(uniqueUsername())
+    const forged = await signToken(res.body.user.id, 'another-secret-that-is-at-least-32-chars')
+
+    const games = await request(app).get('/api/games').set('Cookie', `token=${forged}`)
+
+    expect(games.status).toBe(401)
+    expect(games.body.error.code).toBe('UNAUTHORIZED')
   })
 
   it('정상 토큰도 서명 키가 같아야 통과한다 (테스트 키로 만든 토큰)', async () => {
@@ -173,9 +183,11 @@ describe('POST /api/auth/logout', () => {
 
     const logout = await agent.post('/api/auth/logout')
     const me = await agent.get('/api/auth/me')
+    const games = await agent.get('/api/games')
 
     expect(logout.status).toBe(204)
-    expect(me.status).toBe(401)
+    expect(me.body).toEqual({ user: null })
+    expect(games.status).toBe(401)
   })
 
   it('로그인하지 않은 상태에서도 오류 없이 204', async () => {

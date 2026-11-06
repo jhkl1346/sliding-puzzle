@@ -27,8 +27,12 @@ export function mockFetch(handlers: Record<string, Handler>) {
   return fetchMock
 }
 
+// 로그인이 필요한 API에 로그인 없이 요청했을 때 (또는 로그인이 만료됐을 때)
 export const NOT_LOGGED_IN: Handler = () =>
   jsonResponse(401, { error: { code: 'UNAUTHORIZED', message: '로그인이 필요해요.' } })
+
+// GET /api/auth/me: 로그인하지 않은 상태
+export const GUEST: Handler = () => jsonResponse(200, { user: null })
 
 // 서버 상태(TanStack Query)와 주소 이동(react-router)이 필요한 컴포넌트를 그린다.
 export function renderWithProviders(ui: ReactNode, route = '/') {

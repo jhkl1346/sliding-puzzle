@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import App from './App'
-import { mockFetch, NOT_LOGGED_IN } from './test/utils'
+import { mockFetch, GUEST } from './test/utils'
 
 afterEach(() => {
   vi.unstubAllGlobals()
@@ -9,7 +9,7 @@ afterEach(() => {
 
 describe('App', () => {
   it('첫 화면에서 연습 모드 게임을 보여준다', async () => {
-    mockFetch({ 'GET /api/auth/me': NOT_LOGGED_IN })
+    mockFetch({ 'GET /api/auth/me': GUEST })
     render(<App />)
 
     expect(await screen.findByRole('heading', { name: 'Sliding Puzzle' })).toBeInTheDocument()

@@ -1,7 +1,7 @@
 import type { CompletedGame, SizeStats, StatsResponse } from '@sliding-puzzle/shared'
 import { screen, waitFor, within } from '@testing-library/react'
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
-import { jsonResponse, mockFetch, NOT_LOGGED_IN, renderApp } from '../test/utils'
+import { jsonResponse, mockFetch, GUEST, renderApp } from '../test/utils'
 
 const USER = { id: 'user-1', username: 'player_one' }
 const LOGGED_IN = () => jsonResponse(200, { user: USER })
@@ -88,7 +88,7 @@ afterEach(() => {
 
 describe('내 기록 페이지', () => {
   it('로그인하지 않았으면 로그인 화면으로 보낸다', async () => {
-    mockFetch({ 'GET /api/auth/me': NOT_LOGGED_IN })
+    mockFetch({ 'GET /api/auth/me': GUEST })
     renderApp('/records')
 
     expect(await screen.findByRole('heading', { name: '로그인' })).toBeInTheDocument()

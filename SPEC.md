@@ -3,7 +3,7 @@
 > 이 문서를 프로젝트 루트에 `SPEC.md`로 두고, 위에서부터 순서대로 진행합니다.
 > Claude Code와 작업할 때는 "SPEC.md를 읽고 다음 마일스톤을 진행해줘"처럼 요청하면 됩니다.
 >
-> **현재 진행 상황 (2026-11-06 기준):** 마일스톤 7 진행 중 (보안 점검·배포 설정·CI·README 준비 완료, 실제 배포와 확인 남음).
+> **현재 진행 상황 (2026-11-06 기준):** 마일스톤 7 진행 중 (배포 완료: https://sliding-puzzle-ashy-sigma.vercel.app, README 스크린샷과 최종 확인 남음).
 
 ---
 
@@ -195,7 +195,7 @@ model Game {
 | POST   | `/api/auth/register`     | X    | 회원가입 `{ username, password }`                             |
 | POST   | `/api/auth/login`        | X    | 로그인, httpOnly 쿠키 발급                                    |
 | POST   | `/api/auth/logout`       | X    | 쿠키 삭제 (로그인이 만료된 상태에서도 항상 204)               |
-| GET    | `/api/auth/me`           | O    | 현재 사용자 정보                                              |
+| GET    | `/api/auth/me`           | X    | 현재 사용자 정보 (로그인하지 않았으면 `{ "user": null }`)     |
 | POST   | `/api/games`             | O    | 새 게임 시작 `{ size }` → `{ id, size, seed }`                |
 | POST   | `/api/games/:id/finish`  | O    | 완료 제출 `{ moveLog, timeMs }` → 서버 재생 검증 후 결과 반환 |
 | POST   | `/api/games/:id/abandon` | O    | 포기 처리                                                     |
@@ -342,8 +342,8 @@ function replay(size: number, seed: number, moveLog: number[]): { ok: boolean; m
 ### 마일스톤 7. 품질과 배포 (1일)
 
 - [x] 보안 점검 (rate limit, 입력 길이 제한, 환경변수, 쿠키 설정)
-- [ ] 접근성 · 모바일 점검, Lighthouse
-- [ ] 클라이언트 Vercel, 서버 Render, DB 배포와 환경변수 설정
+- [x] 접근성 · 모바일 점검, Lighthouse
+- [x] 클라이언트 Vercel, 서버 Render, DB 배포와 환경변수 설정
 - [x] GitHub Actions로 린트 / 테스트 자동화
 - [ ] README 완성 (구조도, 검증 설계, 한계, 트러블슈팅)
 

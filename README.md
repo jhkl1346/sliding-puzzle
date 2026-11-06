@@ -3,8 +3,15 @@
 3×3~5×5 슬라이딩 퍼즐을 풀고, 로그인한 사용자의 **개인 기록과 성장 통계**를 저장해 보여주는 풀스택 웹 게임입니다.
 클라이언트가 보낸 기록을 그대로 믿지 않고, **서버가 이동 기록을 처음부터 다시 재생해서 검증한 뒤** 저장합니다.
 
-- 배포: _(배포 후 링크 추가)_
-- 스크린샷: _(배포 후 추가)_
+- **배포**: https://sliding-puzzle-ashy-sigma.vercel.app
+- 스크린샷: _(추가 예정)_
+
+| Lighthouse (첫 측정) | 성능 | 접근성 | 권장 사항 | SEO |
+| -------------------- | ---- | ------ | --------- | --- |
+| 모바일               | 99   | 100    | 96        | 82  |
+| 데스크톱             | 100  | 100    | 96        | 82  |
+
+첫 측정에서 나온 지적 사항(콘솔 오류, 페이지 설명 없음, `robots.txt` 없음)은 고쳤고, 다시 배포한 뒤 재측정합니다.
 
 ## 주요 기능
 
@@ -97,7 +104,7 @@ server/   Express API, Prisma 스키마와 마이그레이션
 | POST   | `/api/auth/register`     | X    | 회원가입 `{ username, password }` → 로그인 쿠키 발급                      |
 | POST   | `/api/auth/login`        | X    | 로그인 → 로그인 쿠키 발급                                                 |
 | POST   | `/api/auth/logout`       | X    | 쿠키 삭제 (로그인이 만료된 상태에서도 항상 204)                           |
-| GET    | `/api/auth/me`           | O    | 현재 사용자                                                               |
+| GET    | `/api/auth/me`           | X    | 현재 사용자 (로그인하지 않았으면 `{ "user": null }`)                      |
 | POST   | `/api/games`             | O    | 새 게임 시작 `{ size }` → `{ id, size, seed }`                            |
 | POST   | `/api/games/:id/finish`  | O    | 완료 제출 `{ moveLog, timeMs }` → 재생 검증 후 기록과 최고 기록 갱신 여부 |
 | POST   | `/api/games/:id/abandon` | O    | 포기                                                                      |

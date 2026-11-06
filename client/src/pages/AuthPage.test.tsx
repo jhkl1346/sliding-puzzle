@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { jsonResponse, mockFetch, NOT_LOGGED_IN, renderApp } from '../test/utils'
+import { jsonResponse, mockFetch, GUEST, renderApp } from '../test/utils'
 
 const USER = { id: 'user-1', username: 'player_one' }
 
@@ -22,7 +22,7 @@ async function fillAndSubmit(
 describe('로그인 화면', () => {
   it('로그인하면 게임 화면으로 가고 머리글에 내 아이디가 보인다', async () => {
     const fetchMock = mockFetch({
-      'GET /api/auth/me': NOT_LOGGED_IN,
+      'GET /api/auth/me': GUEST,
       'POST /api/auth/login': () => jsonResponse(200, { user: USER }),
     })
     const { user } = renderApp('/login')
@@ -44,7 +44,7 @@ describe('로그인 화면', () => {
 
   it('비밀번호가 틀리면 서버 메시지를 보여주고 화면에 머문다', async () => {
     mockFetch({
-      'GET /api/auth/me': NOT_LOGGED_IN,
+      'GET /api/auth/me': GUEST,
       'POST /api/auth/login': () =>
         jsonResponse(401, {
           error: { code: 'INVALID_CREDENTIALS', message: '아이디 또는 비밀번호가 틀렸어요.' },
@@ -59,7 +59,7 @@ describe('로그인 화면', () => {
   })
 
   it('규칙에 맞지 않는 입력은 서버에 보내지 않고 바로 알려준다', async () => {
-    const fetchMock = mockFetch({ 'GET /api/auth/me': NOT_LOGGED_IN })
+    const fetchMock = mockFetch({ 'GET /api/auth/me': GUEST })
     const { user } = renderApp('/login')
 
     await fillAndSubmit(user, 'ab', 'short', '로그인')
@@ -72,7 +72,7 @@ describe('로그인 화면', () => {
 
   it('서버에 연결하지 못하면 안내 메시지를 보여준다', async () => {
     mockFetch({
-      'GET /api/auth/me': NOT_LOGGED_IN,
+      'GET /api/auth/me': GUEST,
       'POST /api/auth/login': () => {
         throw new TypeError('Failed to fetch')
       },
@@ -95,7 +95,7 @@ describe('로그인 화면', () => {
 describe('회원가입 화면', () => {
   it('가입하면 바로 로그인된 상태로 게임 화면에 간다', async () => {
     mockFetch({
-      'GET /api/auth/me': NOT_LOGGED_IN,
+      'GET /api/auth/me': GUEST,
       'POST /api/auth/register': () => jsonResponse(201, { user: USER }),
     })
     const { user } = renderApp('/register')
@@ -107,7 +107,7 @@ describe('회원가입 화면', () => {
 
   it('이미 있는 아이디면 서버 메시지를 보여준다', async () => {
     mockFetch({
-      'GET /api/auth/me': NOT_LOGGED_IN,
+      'GET /api/auth/me': GUEST,
       'POST /api/auth/register': () =>
         jsonResponse(409, {
           error: { code: 'USERNAME_TAKEN', message: '이미 사용 중인 아이디예요.' },
@@ -121,7 +121,7 @@ describe('회원가입 화면', () => {
   })
 
   it('입력 규칙 안내를 보여준다', () => {
-    mockFetch({ 'GET /api/auth/me': NOT_LOGGED_IN })
+    mockFetch({ 'GET /api/auth/me': GUEST })
     renderApp('/register')
 
     expect(screen.getByLabelText('아이디')).toHaveAccessibleDescription(/영문, 숫자, 밑줄/)
@@ -131,7 +131,7 @@ describe('회원가입 화면', () => {
 
 describe('머리글', () => {
   it('로그인하지 않았으면 로그인·회원가입 링크를 보여준다', async () => {
-    mockFetch({ 'GET /api/auth/me': NOT_LOGGED_IN })
+    mockFetch({ 'GET /api/auth/me': GUEST })
     renderApp('/')
 
     expect(await screen.findByRole('link', { name: '로그인' })).toHaveAttribute('href', '/login')

@@ -91,7 +91,6 @@ export function createApp({
       authService: createAuthService(prisma, bcryptRounds),
       jwtSecret,
       secureCookies,
-      requireAuth,
       rateLimit: authLimiter,
     }),
   )

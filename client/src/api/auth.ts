@@ -1,15 +1,10 @@
 import type { Credentials, PublicUser } from '@sliding-puzzle/shared'
-import { ApiError, apiRequest } from './client'
+import { apiRequest } from './client'
 
-// 로그인하지 않았으면 null
+// 로그인하지 않았으면 null (서버가 { user: null }로 돌려준다)
 export async function fetchMe(): Promise<PublicUser | null> {
-  try {
-    const { user } = await apiRequest<{ user: PublicUser }>('/api/auth/me')
-    return user
-  } catch (error) {
-    if (error instanceof ApiError && error.status === 401) return null
-    throw error
-  }
+  const { user } = await apiRequest<{ user: PublicUser | null }>('/api/auth/me')
+  return user
 }
 
 export async function login(credentials: Credentials): Promise<PublicUser> {

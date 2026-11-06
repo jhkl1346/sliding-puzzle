@@ -1,7 +1,6 @@
 import { credentialsSchema } from '@sliding-puzzle/shared'
 import { type CookieOptions, type RequestHandler, type Response, Router } from 'express'
-import { signToken, TOKEN_COOKIE, TOKEN_MAX_AGE_MS } from '../auth/token'
-import { AppError } from '../errors'
+import { signToken, TOKEN_COOKIE, TOKEN_MAX_AGE_MS, verifyToken } from '../auth/token'
 import { validateBody } from '../middleware/validate'
 import type { createAuthService } from '../services/authService'
 
@@ -9,7 +8,6 @@ interface AuthRouterDeps {
   authService: ReturnType<typeof createAuthService>
   jwtSecret: string
   secureCookies: boolean
-  requireAuth: RequestHandler
   rateLimit: RequestHandler
 }
 
@@ -17,7 +15,6 @@ export function createAuthRouter({
   authService,
   jwtSecret,
   secureCookies,
-  requireAuth,
   rateLimit,
 }: AuthRouterDeps) {
   const router = Router()
@@ -53,10 +50,13 @@ export function createAuthRouter({
     res.status(204).end()
   })
 
-  router.get('/me', requireAuth, async (req, res) => {
-    const user = await authService.findUser(req.userId!)
-    // 토큰은 유효하지만 계정이 지워진 경우
-    if (!user) throw new AppError(401, 'UNAUTHORIZED', '로그인이 필요해요.')
+  // "로그인했는지 확인"하는 용도라, 로그인하지 않은 상태도 정상 결과(user: null)로 돌려준다.
+  // (401로 응답하면 첫 화면을 열 때마다 브라우저 콘솔에 오류가 남는다)
+  // 쿠키가 없거나, 토큰이 위조·만료됐거나, 계정이 지워진 경우 모두 user: null이다.
+  router.get('/me', async (req, res) => {
+    const token: unknown = req.cookies?.[TOKEN_COOKIE]
+    const userId = typeof token === 'string' ? await verifyToken(token, jwtSecret) : null
+    const user = userId ? await authService.findUser(userId) : null
     res.json({ user })
   })
 

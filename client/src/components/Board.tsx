@@ -107,17 +107,24 @@ export function Board({
               {/* CSS 점선은 간격을 조절할 수 없어서 SVG로 그린다.
                   둥근 끝이 양쪽으로 1px씩 늘어나므로 실제로는 선 약 6px, 빈칸 약 8px로 보인다. */}
               <svg className="block h-full w-full overflow-visible">
-                <rect
-                  x="1"
-                  y="1"
-                  rx="7"
-                  style={{ width: 'calc(100% - 2px)', height: 'calc(100% - 2px)' }}
-                  fill="none"
-                  stroke={HINT_COLOR}
-                  strokeWidth="2"
-                  strokeDasharray="4 10"
-                  strokeLinecap="round"
-                />
+                {/* 같은 점선을 흰색으로 두껍게 한 번 더 깔아서, 어두운 타일(클래식 체스판 남색) 위에서도 보이게 한다. */}
+                {[
+                  { stroke: '#ffffff', width: 4 },
+                  { stroke: HINT_COLOR, width: 2 },
+                ].map(({ stroke, width }) => (
+                  <rect
+                    key={stroke}
+                    x="1"
+                    y="1"
+                    rx="7"
+                    style={{ width: 'calc(100% - 2px)', height: 'calc(100% - 2px)' }}
+                    fill="none"
+                    stroke={stroke}
+                    strokeWidth={width}
+                    strokeDasharray="4 10"
+                    strokeLinecap="round"
+                  />
+                ))}
               </svg>
             </div>
           )}

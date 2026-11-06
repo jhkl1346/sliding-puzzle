@@ -1,7 +1,7 @@
 import { shuffleWithMoves } from '@sliding-puzzle/shared'
 import { screen, waitFor } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { jsonResponse, mockFetch, NOT_LOGGED_IN, renderApp } from '../test/utils'
+import { jsonResponse, mockFetch, GUEST, NOT_LOGGED_IN, renderApp } from '../test/utils'
 
 const USER = { id: 'user-1', username: 'player_one' }
 const SEED = 777
@@ -157,7 +157,7 @@ describe('기록 모드 (로그인)', () => {
 
 describe('연습 모드 (비로그인)', () => {
   it('서버에 게임을 만들지 않는다', async () => {
-    const fetchMock = mockFetch({ 'GET /api/auth/me': NOT_LOGGED_IN })
+    const fetchMock = mockFetch({ 'GET /api/auth/me': GUEST })
     renderApp('/')
 
     expect(await screen.findByText('연습 모드 · 기록은 저장되지 않아요')).toBeInTheDocument()
