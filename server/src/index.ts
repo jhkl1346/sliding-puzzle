@@ -1,15 +1,15 @@
 import 'dotenv/config'
 import { createApp } from './app'
-import { createPrisma } from './db'
+import { createPrisma, waitForDatabase } from './db'
 import { loadEnv } from './env'
 
 const env = loadEnv()
 const prisma = createPrisma(env.DATABASE_URL)
 
-// 시작할 때 간단한 쿼리를 한 번 보내 봐서, 주소가 틀렸으면 바로 알 수 있게 한다.
+// 시작할 때 간단한 쿼리를 보내 봐서, 주소가 틀렸거나 DB가 응답하지 않으면 바로 알 수 있게 한다.
 // (드라이버 어댑터를 쓰면 $connect()만으로는 실제로 접속하지 않는다)
 try {
-  await prisma.$queryRaw`SELECT 1`
+  await waitForDatabase(prisma)
 } catch (error) {
   console.error('DB에 접속하지 못했어요. server/.env의 DATABASE_URL을 확인해 주세요.')
   throw error
