@@ -344,7 +344,7 @@ function replay(size: number, seed: number, moveLog: number[]): { ok: boolean; m
 - [x] 보안 점검 (rate limit, 입력 길이 제한, 환경변수, 쿠키 설정)
 - [ ] 접근성 · 모바일 점검, Lighthouse
 - [ ] 클라이언트 Vercel, 서버 Render, DB 배포와 환경변수 설정
-- [ ] GitHub Actions로 린트 / 테스트 자동화
+- [x] GitHub Actions로 린트 / 테스트 자동화
 - [ ] README 완성 (구조도, 검증 설계, 한계, 트러블슈팅)
 
 ### 마일스톤 8. 도전 과제 (선택)
